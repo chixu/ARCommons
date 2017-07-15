@@ -21,6 +21,9 @@ public class ScanSceneController : MonoBehaviour
 	public Text title;
 	public Text description;
 	public GameObject planePrefab;
+	public static ScanSceneController instant;
+	public static GameObject currentTrackableObject;
+	public ScanSceneState state;
 
 	//	private Config localConfig;
 	//	private Config remoteConfig;
@@ -28,8 +31,9 @@ public class ScanSceneController : MonoBehaviour
 	private string dataSetName = "trackings.xml";
 	private Dictionary<string, UnityEngine.Object> loadedAssets;
 	private Dictionary<string, string> ConfigDict = new Dictionary<string, string> ();
-	private string prevSceneName;
+	public string prevSceneName;
 	private XElement itemInfos;
+
 
 	[System.Serializable]
 	public class Config
@@ -61,9 +65,8 @@ public class ScanSceneController : MonoBehaviour
 	IEnumerator StartGame ()
 	{
 		loadedAssets = new Dictionary<string, UnityEngine.Object> ();
-		title.text = I18n.Translate ("scan_title");
-		description.text = I18n.Translate ("scan_desc");
-		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+
+		SetState ("idle");
 
 		yield return Request.ReadPersistent (prevSceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
 
@@ -100,6 +103,20 @@ public class ScanSceneController : MonoBehaviour
 
 		}
 		StartCoroutine(LoadDataSet ());
+	}
+
+	public void SetState(string name, Hashtable args = null){
+		Logger.Log ("scene: " + name, "green");
+		if(state!=null)state.OnExit ();
+		state = ScanSceneState.GetState (name);
+		state.scene = this;
+		state.OnEnter (args);
+	}
+
+	void Awake(){
+		instant = this;
+		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
+
 	}
 
 	void Start ()
@@ -150,6 +167,8 @@ public class ScanSceneController : MonoBehaviour
 				tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
 				tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
 				tb.gameObject.AddComponent<TurnOffBehaviour> ();
+				CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+				cte.type = objType;
 				UnityEngine.Object asset = null;
 				if (objType == "object") {
 					asset = loadedAssets [tb.TrackableName];
@@ -157,22 +176,22 @@ public class ScanSceneController : MonoBehaviour
 					asset = planePrefab;
 					Renderer render = (planePrefab).GetComponent<Renderer> ();
 					render.material = videoMaterial;
-					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
-					cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
-					cte.mediaPlayer = mediaPlayer;
+
+					cte.videoPath = GetAssetsPath (Xml.Attribute(info, "videosrc"));
+					//cte.mediaPlayer = mediaPlayer;
 				}	else if (objType == "menu4"){
 					//asset = planePrefab;
 					Renderer render = (planePrefab).GetComponent<Renderer> ();
 					render.material = videoMaterial;
-					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+					//CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 					//cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
 					cte.mediaPlayer = mediaPlayer;
 
 
-					tb.gameObject.AddComponent<TrackableMenuEventHandler> ();
-					TrackableMenuEventHandler tmeh = tb.gameObject.GetComponent<TrackableMenuEventHandler> ();
-					tmeh.menuItems = new List<PopMenuItem> ();
-					tmeh.playerMateral = Resources.Load<Material> ("Materials/mediaPlayer");
+					tb.gameObject.AddComponent<PopMenu> ();
+					PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
+					popmenu.menuItems = new List<PopMenuItem> ();
+					popmenu.playerMateral = videoMaterial;
 
 					var menuNodes = info.Elements ();
 					//XElement res = null;
@@ -180,11 +199,11 @@ public class ScanSceneController : MonoBehaviour
 					foreach(XElement n in menuNodes){
 						GameObject planeItem = GameObject.Instantiate(Resources.Load("Prefabs/PlaneItem4")) as GameObject;
 						PopMenuItem pmi  = planeItem.GetComponent<PopMenuItem> ();
-						tmeh.menuItems.Add (pmi);
+						popmenu.menuItems.Add (pmi);
 						pmi.floatSpeed = 5f;
 						pmi.floatAmplitude = 0.03f;
 						pmi.index = index;
-						pmi.trackableMenu = tmeh;
+						pmi.menu = popmenu;
 						pmi.trackableHandler = cte;
 						planeItem.transform.SetParent (tb.gameObject.transform, false);
 						Vector3 position = planeItem.transform.localPosition;
@@ -241,15 +260,14 @@ public class ScanSceneController : MonoBehaviour
 
 	public void OnBackClick ()
 	{
-		Debug.Log ("back Clicked");
-		SceneManager.LoadScene ("Selection");
+		state.OnBackClick ();
 	}
 	//	void Log (string str)
 	//	{
 	//		if (!String.IsNullOrEmpty (str))
 	//			text.text += "\n" + str;
 	//	}
-	void Update(){
-		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
-	}
+//	void Update(){
+//		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
+//	}
 }

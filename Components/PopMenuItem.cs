@@ -14,7 +14,7 @@ public class PopMenuItem : MonoBehaviour {
 	public float floatAmplitude = 0.1f;
 	private float tick;
 	public int index;
-	public TrackableMenuEventHandler trackableMenu;
+	public PopMenu menu;
 	public CustomTrackableEventHandler trackableHandler;
 	private MeshRenderer meshRenderer;
 	public Material material;
@@ -97,17 +97,17 @@ public class PopMenuItem : MonoBehaviour {
 			transform.DOLocalMove (new Vector3 (0, origPosition.y * 2, 0), 0.3f).SetEase (Ease.OutQuad);
 			transform.DOScale (origScale * 2, 0.3f).SetEase (Ease.OutQuad).OnComplete (PlayVideo);
 		} else {
-			SceneController.instant.ShowBackButtonOnly ();
+			//SceneController.instant.ShowBackButtonOnly ();
 			threeDObject.SetActive (true);
-			trackableMenu.HideAllItems ();
+			menu.HideAllItems ();
 		}
 	}
 
 	void PlayVideo(){
-		trackableMenu.HideAllItems (index);
-		trackableHandler.PlayVideo (videoPath);
-		meshRenderer.material = trackableMenu.playerMateral;
-		SceneController.instant.ShowTop ();
+		menu.HideAllItems (index);
+		//trackableHandler.PlayVideo (videoPath);
+		meshRenderer.material = menu.playerMateral;
+		//SceneController.instant.ShowTop ();
 		//trackableMenu.playerPlane.SetActive (true);
 	}
 }

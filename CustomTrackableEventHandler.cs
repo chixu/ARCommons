@@ -25,7 +25,8 @@ namespace Vuforia
 		//private ImageTargetBehaviour ITB;
 		private TouchRotate touchRotate;
 		public MediaPlayer mediaPlayer;
-		public bool isMenu = false;
+		//public bool isMenu = false;
+		public string type;
 
 		#endregion // PRIVATE_MEMBER_VARIABLES
 
@@ -77,44 +78,31 @@ namespace Vuforia
 		#endregion // PUBLIC_METHODS
 
 
-//		public void OnForcedLostTracking(){
-//
-//			isForcedTrackingLost = true;
-//			OnTrackingLost ();
-//
-//		}
-
-
-//		#endregion // PUBLIC_METHODS
-
-
-
-//		#region PRIVATE_METHODS
-
-
 		virtual protected void OnTrackingFound()
 		{
 //			if (touchRotate) {
 //				touchRotate.enabled = true;
 //			}
-			SceneController.currentTrackableObject = this.gameObject;
+			ScanSceneController.currentTrackableObject = this.gameObject;
 			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (true);
 			}
-			if(!string.IsNullOrEmpty(videoPath))
-				PlayVideo (videoPath);
+//			if(!string.IsNullOrEmpty(videoPath))
+//				PlayVideo (videoPath);
+
+			ScanSceneController.instant.SetState (type);
 		}
 
-		public void PlayVideo(string path){
-			if(mediaPlayer) {
-				mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, path, true);
-				//VCR.instant
-				VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
-				mediaPlayer.Rewind(false);
-				mediaPlayer.Play ();
-			}
-		}
+//		public void PlayVideo(string path){
+//			if(mediaPlayer) {
+//				mediaPlayer.OpenVideoFromFile  
+//				//VCR.instant
+//				VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
+//				mediaPlayer.Rewind(false);
+//				mediaPlayer.Play ();
+//			}
+//		}
 
 
 		virtual protected void OnTrackingLost()
@@ -122,7 +110,7 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = false;
 //			}
-			SceneController.currentTrackableObject = null;
+			ScanSceneController.currentTrackableObject = null;
 			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (false);
