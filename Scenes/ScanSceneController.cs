@@ -1,4 +1,4 @@
-﻿ using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -72,7 +72,7 @@ public class ScanSceneController : MonoBehaviour
 
 		yield return Request.ReadPersistent (prevSceneName + "/iteminfos.xml", str => itemInfos = XDocument.Parse (str).Root);
 
-		var abNodes = data.Element ("assetbundles").Nodes();
+		var abNodes = data.Element ("assetbundles").Nodes ();
 		foreach (XElement node in abNodes) {
 			AssetBundle bundle = null;
 			string abName = Xml.Attribute (node, "src");
@@ -96,8 +96,8 @@ public class ScanSceneController : MonoBehaviour
 						string simpleName = Path.GetFileNameWithoutExtension (name);
 						//Instantiate(bundle.LoadAsset());
 						Logger.Log (simpleName, "purple");
-						if(loadedAssets.ContainsKey(simpleName))
-							loadedAssets[simpleName] = bundle.LoadAsset (simpleName);
+						if (loadedAssets.ContainsKey (simpleName))
+							loadedAssets [simpleName] = bundle.LoadAsset (simpleName);
 						else
 							loadedAssets.Add (simpleName, bundle.LoadAsset (simpleName));
 					}
@@ -107,13 +107,14 @@ public class ScanSceneController : MonoBehaviour
 
 			}
 		}
-		StartCoroutine(LoadDataSet ());
+		StartCoroutine (LoadDataSet ());
 	}
 
-	public void SetState(string name, Hashtable args = null){
+	public void SetState (string name, Hashtable args = null)
+	{
 		if (state != null) {
 			state.OnExit ();
-			Logger.Log ("leaving scene: " + state.ToString(), "green");
+			Logger.Log ("leaving scene: " + state.ToString (), "green");
 		}
 		Logger.Log ("scene: " + name, "green");
 		state = ScanSceneState.GetState (name);
@@ -121,7 +122,8 @@ public class ScanSceneController : MonoBehaviour
 		state.OnEnter (args);
 	}
 
-	void Awake(){
+	void Awake ()
+	{
 		instant = this;
 		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
 		data = SceneManagerExtension.GetSceneArguments () ["data"] as XElement;
@@ -136,10 +138,10 @@ public class ScanSceneController : MonoBehaviour
 	{
 
 		ObjectTracker objectTracker = TrackerManager.Instance.GetTracker<ObjectTracker> ();
-
+		objectTracker.DestroyAllDataSets (true);
 		objectTracker.Stop ();  // stop tracker so that we can add new dataset
 
-		var tNodes = data.Element ("trackings").Nodes();
+		var tNodes = data.Element ("trackings").Nodes ();
 		foreach (XElement node in tNodes) {
 			string dataSetName = Xml.Attribute (node, "src");
 			//Debug.Log (Application.persistentDataPath + "/" + dataSetName);
@@ -151,119 +153,117 @@ public class ScanSceneController : MonoBehaviour
 					// Note: ImageTracker cannot have more than 100 total targets activated
 					Debug.Log ("<color=yellow>Failed to Activate DataSet: " + dataSetName + "</color>");
 				}
-
-
-				//int counter = 0;
-
-				IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
-				foreach (TrackableBehaviour tb in tbs) {
-
-
-
-					Logger.Log (tb.TrackableName, "purple");
-					//if (loadedAssets.ContainsKey (tb.TrackableName)) {
-					//Log ("DynamicImageTarget-" + tb.TrackableName);
-					//				if (tb.name == "New Game Object") {
-					//				 
-					//					// change generic name to include trackable name
-					tb.gameObject.name = "AR-" + tb.TrackableName;
-
-					XElement info = Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName);
-					if (info == null)
-						continue;
-					string objType = Xml.Attribute (info, "type");
-					//				 
-					//					// add additional script components for trackable
-					tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
-					tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
-					tb.gameObject.AddComponent<TurnOffBehaviour> ();
-					CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
-					cte.type = objType;
-					UnityEngine.Object asset = null;
-					if (objType == "object") {
-						asset = loadedAssets.ContainsKey (tb.TrackableName) ? loadedAssets [tb.TrackableName] : new GameObject ();
-					} else if (objType == "video") {
-						asset = planePrefab;
-						Renderer render = (planePrefab).GetComponent<Renderer> ();
-						render.material = videoMaterial;
-
-						cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"));
-						//cte.mediaPlayer = mediaPlayer;
-					} else if (objType == "menu4") {
-						//asset = planePrefab;
-						Renderer render = (planePrefab).GetComponent<Renderer> ();
-						render.material = videoMaterial;
-						//CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
-						//cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
-						cte.mediaPlayer = mediaPlayer;
-
-
-						tb.gameObject.AddComponent<PopMenu> ();
-						PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
-						popmenu.menuItems = new List<PopMenuItem> ();
-						//popmenu.playerMateral = videoMaterial;
-
-						var menuNodes = info.Elements ();
-						//XElement res = null;
-						int index = 0;
-						foreach (XElement n in menuNodes) {
-							GameObject planeItem = GameObject.Instantiate (Resources.Load ("Prefabs/PlaneItem4")) as GameObject;
-							PopMenuItem pmi = planeItem.GetComponent<PopMenuItem> ();
-							popmenu.menuItems.Add (pmi);
-							pmi.floatSpeed = 5f;
-							pmi.floatAmplitude = 0.03f;
-							pmi.index = index;
-							pmi.menu = popmenu;
-							pmi.trackableHandler = cte;
-							planeItem.transform.SetParent (tb.gameObject.transform, false);
-							Vector3 position = planeItem.transform.localPosition;
-							if (index == 1) {
-								planeItem.transform.localPosition = position.SetX (-position.x);
-							} else if (index == 2) {
-								planeItem.transform.localPosition = position.SetZ (-position.z);
-							} else if (index == 3) {
-								planeItem.transform.localPosition = new Vector3 (-position.x, position.y, -position.z);
-							}
-							pmi.Initiate ();
-
-							string itemSrc = Xml.Attribute (n, "src");
-							string videoPath = Xml.Attribute (n, "videosrc");
-							if (!string.IsNullOrEmpty (videoPath))
-								pmi.videoPath = GetAssetsPath (videoPath);
-							else {
-								pmi.threeDObject = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
-								pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
-							}
-							WWW www = new WWW (GetAssetsPath (itemSrc, true));
-							yield return www;
-							Logger.Log (GetAssetsPath (itemSrc, true) + " " + www.texture.ToString ());
-							pmi.material.mainTexture = www.texture;
-							//Logger.Log (planeItem.transform.localPosition.x.ToString() + " " +planeItem.transform.localPosition.y+ " " + planeItem.transform.localPosition.z, "blue");
-							index++;
-						}
-						popmenu.Hide ();
-					}
-					//GameObject obj = (GameObject)GameObject.Instantiate (asset);
-					if (asset != null) {
-						GameObject prefab = asset as GameObject;
-						GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
-
-						obj.transform.SetParent (tb.gameObject.transform, false);
-						ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
-					}
-					//obj.gameObject.SetActive (true);
-				}
-
-			} else {
-				Debug.LogError ("<color=yellow>Failed to load dataset: '" + dataSetName + "'</color>");
 			}
 		}
 		if (!objectTracker.Start ()) {
 			Debug.Log ("<color=yellow>Tracker Failed to Start.</color>");
 		}
+
+
+		//int counter = 0;
+
+		IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
+		foreach (TrackableBehaviour tb in tbs) {
+
+
+
+			Logger.Log (tb.TrackableName, "purple");
+			//if (loadedAssets.ContainsKey (tb.TrackableName)) {
+			//Log ("DynamicImageTarget-" + tb.TrackableName);
+			//				if (tb.name == "New Game Object") {
+			//				 
+			//					// change generic name to include trackable name
+			tb.gameObject.name = "AR-" + tb.TrackableName;
+
+			XElement info = Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName);
+			if (info == null)
+				continue;
+			string objType = Xml.Attribute (info, "type");
+			//				 
+			//					// add additional script components for trackable
+			tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
+			tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
+			tb.gameObject.AddComponent<TurnOffBehaviour> ();
+			CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+			cte.type = objType;
+			UnityEngine.Object asset = null;
+			if (objType == "object") {
+				asset = loadedAssets.ContainsKey (tb.TrackableName) ? loadedAssets [tb.TrackableName] : new GameObject ();
+			} else if (objType == "video") {
+				asset = planePrefab;
+				Renderer render = (planePrefab).GetComponent<Renderer> ();
+				render.material = videoMaterial;
+
+				cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"));
+				//cte.mediaPlayer = mediaPlayer;
+			} else if (objType == "menu4") {
+				//asset = planePrefab;
+				Renderer render = (planePrefab).GetComponent<Renderer> ();
+				render.material = videoMaterial;
+				//CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
+				//cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
+				cte.mediaPlayer = mediaPlayer;
+
+
+				tb.gameObject.AddComponent<PopMenu> ();
+				PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
+				popmenu.menuItems = new List<PopMenuItem> ();
+				//popmenu.playerMateral = videoMaterial;
+
+				var menuNodes = info.Elements ();
+				//XElement res = null;
+				int index = 0;
+				foreach (XElement n in menuNodes) {
+					GameObject planeItem = GameObject.Instantiate (Resources.Load ("Prefabs/PlaneItem4")) as GameObject;
+					PopMenuItem pmi = planeItem.GetComponent<PopMenuItem> ();
+					popmenu.menuItems.Add (pmi);
+					pmi.floatSpeed = 5f;
+					pmi.floatAmplitude = 0.03f;
+					pmi.index = index;
+					pmi.menu = popmenu;
+					pmi.trackableHandler = cte;
+					planeItem.transform.SetParent (tb.gameObject.transform, false);
+					Vector3 position = planeItem.transform.localPosition;
+					if (index == 1) {
+						planeItem.transform.localPosition = position.SetX (-position.x);
+					} else if (index == 2) {
+						planeItem.transform.localPosition = position.SetZ (-position.z);
+					} else if (index == 3) {
+						planeItem.transform.localPosition = new Vector3 (-position.x, position.y, -position.z);
+					}
+					pmi.Initiate ();
+
+					string itemSrc = Xml.Attribute (n, "src");
+					string videoPath = Xml.Attribute (n, "videosrc");
+					if (!string.IsNullOrEmpty (videoPath))
+						pmi.videoPath = GetAssetsPath (videoPath);
+					else {
+						pmi.threeDObject = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
+						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
+					}
+					WWW www = new WWW (GetAssetsPath (itemSrc, true));
+					yield return www;
+					Logger.Log (GetAssetsPath (itemSrc, true) + " " + www.texture.ToString ());
+					pmi.material.mainTexture = www.texture;
+					//Logger.Log (planeItem.transform.localPosition.x.ToString() + " " +planeItem.transform.localPosition.y+ " " + planeItem.transform.localPosition.z, "blue");
+					index++;
+				}
+				popmenu.Hide ();
+			}
+			//GameObject obj = (GameObject)GameObject.Instantiate (asset);
+			if (asset != null) {
+				GameObject prefab = asset as GameObject;
+				GameObject obj = (GameObject)GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation);
+
+				obj.transform.SetParent (tb.gameObject.transform, false);
+				ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
+			}
+			//obj.gameObject.SetActive (true);
+		}
 	}
 
-	void ApplyItemInfo(GameObject obj, XElement info){
+	void ApplyItemInfo (GameObject obj, XElement info)
+	{
 //		if (itemInfos == null)
 //			return;
 //		XElement info = Xml.GetChildByAttribute (itemInfos, "id", name);
@@ -285,7 +285,7 @@ public class ScanSceneController : MonoBehaviour
 	//		if (!String.IsNullOrEmpty (str))
 	//			text.text += "\n" + str;
 	//	}
-//	void Update(){
-//		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
-//	}
+	//	void Update(){
+	//		description.gameObject.SetActive (!VideoController.instant._videoSeekSlider.gameObject.activeSelf);
+	//	}
 }
