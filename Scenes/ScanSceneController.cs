@@ -106,8 +106,11 @@ public class ScanSceneController : MonoBehaviour
 	}
 
 	public void SetState(string name, Hashtable args = null){
+		if (state != null) {
+			state.OnExit ();
+			Logger.Log ("leaving scene: " + state.ToString(), "green");
+		}
 		Logger.Log ("scene: " + name, "green");
-		if(state!=null)state.OnExit ();
 		state = ScanSceneState.GetState (name);
 		state.scene = this;
 		state.OnEnter (args);
@@ -191,7 +194,7 @@ public class ScanSceneController : MonoBehaviour
 					tb.gameObject.AddComponent<PopMenu> ();
 					PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
 					popmenu.menuItems = new List<PopMenuItem> ();
-					popmenu.playerMateral = videoMaterial;
+					//popmenu.playerMateral = videoMaterial;
 
 					var menuNodes = info.Elements ();
 					//XElement res = null;

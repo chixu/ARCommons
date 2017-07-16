@@ -7,8 +7,8 @@ using Vuforia;
 public class PopMenuItem : MonoBehaviour {
 
 	private float origY;
-	private Vector3 origPosition;
-	private Vector3 origScale;
+	public Vector3 origPosition;
+	public Vector3 origScale;
 	private bool isIdle;
 	public float floatSpeed = 1;
 	public float floatAmplitude = 0.1f;
@@ -16,7 +16,7 @@ public class PopMenuItem : MonoBehaviour {
 	public int index;
 	public PopMenu menu;
 	public CustomTrackableEventHandler trackableHandler;
-	private MeshRenderer meshRenderer;
+	public MeshRenderer meshRenderer;
 	public Material material;
 	public GameObject threeDObject = null;
 	public string videoPath;
@@ -50,7 +50,7 @@ public class PopMenuItem : MonoBehaviour {
 	}
 
 	public void Zoom(){
-
+		meshRenderer.material = material;
 		transform.localScale = new Vector3(origScale.x * 0.3f, origScale.y * 0.3f,origScale.z * 0.3f);
 		transform.localPosition = Vector3.zero;
 		gameObject.SetActive (true);
@@ -93,9 +93,11 @@ public class PopMenuItem : MonoBehaviour {
 
 		Debug.Log(index.ToString() + " is HIT!!!");
 		if (threeDObject == null) {
-			StopIdle ();
-			transform.DOLocalMove (new Vector3 (0, origPosition.y * 2, 0), 0.3f).SetEase (Ease.OutQuad);
-			transform.DOScale (origScale * 2, 0.3f).SetEase (Ease.OutQuad).OnComplete (PlayVideo);
+			//StopIdle ();
+			//transform.DOLocalMove (new Vector3 (0, origPosition.y * 2, 0), 0.3f).SetEase (Ease.OutQuad);
+			//transform.DOScale (origScale * 2, 0.3f).SetEase (Ease.OutQuad).OnComplete (PlayVideo);
+
+			ScanSceneController.instant.SetState ("menuvideo", new Hashtable{{"item",this}});
 		} else {
 			//SceneController.instant.ShowBackButtonOnly ();
 			threeDObject.SetActive (true);
@@ -104,10 +106,12 @@ public class PopMenuItem : MonoBehaviour {
 	}
 
 	void PlayVideo(){
-		menu.HideAllItems (index);
+		//menu.HideAllItems (index);
 		//trackableHandler.PlayVideo (videoPath);
-		meshRenderer.material = menu.playerMateral;
+		//meshRenderer.material = menu.playerMateral;
 		//SceneController.instant.ShowTop ();
 		//trackableMenu.playerPlane.SetActive (true);
+
+		//ScanSceneController.instant.SetState ("menuvideo", new Hashtable{{"path",videoPath}});
 	}
 }

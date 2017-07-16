@@ -19,9 +19,10 @@ public class ScanVideoState:ScanSceneState{
 		//scene.description.text = I18n.Translate (scene.prevSceneName+"_scan_desc");
 		string path = ScanSceneController.currentTrackableObject.GetComponent<CustomTrackableEventHandler>().videoPath;
 		scene.mediaPlayer.OpenVideoFromFile(MediaPlayer.FileLocation.AbsolutePathOrURL, path, true); 
-		VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
+		//VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
 		scene.mediaPlayer.Rewind(false);
 		scene.mediaPlayer.Play ();
-		scene.gameObject.SetActive (false);
+		VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
+		scene.description.gameObject.SetActive (false);
 	}
 }

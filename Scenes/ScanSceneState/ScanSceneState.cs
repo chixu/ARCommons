@@ -23,8 +23,12 @@ public class ScanSceneState
 			return new ScanObjectState ();
 		else if(name == "video")
 			return new ScanVideoState ();
+		else if(name == "menuvideo")
+			return new ScanMenuVideoState ();
+		else if(name == "menuobject")
+			return new ScanMenuObjectState ();
 		else
-			return new ScaneMenuState ();
+			return new ScanMenuState ();
 	}
 
 	public virtual void OnTrackFound(){

@@ -110,21 +110,21 @@ namespace Vuforia
 //			if (touchRotate) {
 //				touchRotate.enabled = false;
 //			}
-			ScanSceneController.currentTrackableObject = null;
+			//ScanSceneController.currentTrackableObject = null;
 			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (false);
 			}
-			StopVideo ();
+			ScanSceneController.instant.SetState ("idle");
 		}
 
 
-		public void StopVideo(){
-			if (mediaPlayer) {
-				VideoController.instant._videoSeekSlider.gameObject.SetActive (false);
-				mediaPlayer.Stop ();
-			}
-		}
+//		public void StopVideo(){
+//			if (mediaPlayer) {
+//				VideoController.instant._videoSeekSlider.gameObject.SetActive (false);
+//				mediaPlayer.Stop ();
+//			}
+//		}
 
 //		#endregion // PRIVATE_METHODS
 	}

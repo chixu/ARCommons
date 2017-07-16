@@ -7,9 +7,9 @@ using Vuforia;
 public class PopMenu : MonoBehaviour {
 
 	public List<PopMenuItem> menuItems;
-	private TrackableBehaviour mTrackableBehaviour;
-	private CustomTrackableEventHandler customTrackable;
-	public Material playerMateral;
+	//private TrackableBehaviour mTrackableBehaviour;
+	//private CustomTrackableEventHandler customTrackable;
+	//public Material playerMateral;
 
 
 	IEnumerator PopAllItems ()
@@ -25,20 +25,6 @@ public class PopMenu : MonoBehaviour {
 		}
 	}
 
-	//		void ItemStart(PopMenuItem item)
-	//		{
-	//			Debug.Log ("ItemStart " + item.name);
-	//			item.gameObject.SetActive (true);
-	//		}
-
-
-	void ItemIdle (PopMenuItem item)
-	{
-		for (int i = 0; i < menuItems.Count; i++) {
-			menuItems [i].Idle ();
-		}
-	}
-
 
 	public void Show()
 	{
@@ -49,11 +35,11 @@ public class PopMenu : MonoBehaviour {
 	public void Hide ()
 	{
 		//playerPlane.SetActive (false);
-		for (int i = 0; i < menuItems.Count; i++) {
-			menuItems [i].Reset ();
-		}
+//		for (int i = 0; i < menuItems.Count; i++) {
+//			menuItems [i].Reset ();
+//		}
+		HideAllItems ();
 		HideAll3DModels ();
-		//ScanSceneController.instant.HideAll ();
 	}
 
 	//		public void Show3DObj(int index){
@@ -82,7 +68,7 @@ public class PopMenu : MonoBehaviour {
 
 	public void ShowMenu ()
 	{
-		customTrackable.StopVideo ();
+		//customTrackable.StopVideo ();
 		//SceneController.instant.HideAll ();
 		HideAll3DModels ();
 		for (int i = 0; i < menuItems.Count; i++) {
