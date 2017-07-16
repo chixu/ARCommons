@@ -34,6 +34,7 @@ public class ScanSceneController : MonoBehaviour
 	public string prevSceneName;
 	//from prev scene
 	public XElement data;
+	public bool exited = false;
 	private XElement itemInfos;
 
 
@@ -107,7 +108,16 @@ public class ScanSceneController : MonoBehaviour
 
 			}
 		}
+		PrintLoadedAssets ();
 		StartCoroutine (LoadDataSet ());
+	}
+
+	public void PrintLoadedAssets(){
+		string str = "PrintLoadedAssets";
+		foreach(string s in loadedAssets.Keys){
+			str += " " + s;
+		}
+		Logger.Log(str, "blue");
 	}
 
 	public void SetState (string name, Hashtable args = null)
@@ -138,49 +148,32 @@ public class ScanSceneController : MonoBehaviour
 	{
 
 		ObjectTracker objectTracker = TrackerManager.Instance.GetTracker<ObjectTracker> ();
-		objectTracker.DestroyAllDataSets (true);
+		objectTracker.DestroyAllDataSets (false);
 		objectTracker.Stop ();  // stop tracker so that we can add new dataset
 
 		var tNodes = data.Element ("trackings").Nodes ();
 		foreach (XElement node in tNodes) {
 			string dataSetName = Xml.Attribute (node, "src");
-			//Debug.Log (Application.persistentDataPath + "/" + dataSetName);
 			DataSet dataSet = objectTracker.CreateDataSet ();
 			if (dataSet.Load (GetAssetsPath (dataSetName), VuforiaUnity.StorageType.STORAGE_ABSOLUTE)) {
-				//if (dataSet.Load (dataSetName)) {             
-
 				if (!objectTracker.ActivateDataSet (dataSet)) {
 					// Note: ImageTracker cannot have more than 100 total targets activated
 					Debug.Log ("<color=yellow>Failed to Activate DataSet: " + dataSetName + "</color>");
 				}
 			}
 		}
-		if (!objectTracker.Start ()) {
-			Debug.Log ("<color=yellow>Tracker Failed to Start.</color>");
-		}
-
 
 		//int counter = 0;
-
 		IEnumerable<TrackableBehaviour> tbs = TrackerManager.Instance.GetStateManager ().GetTrackableBehaviours ();
 		foreach (TrackableBehaviour tb in tbs) {
 
-
-
 			Logger.Log (tb.TrackableName, "purple");
-			//if (loadedAssets.ContainsKey (tb.TrackableName)) {
-			//Log ("DynamicImageTarget-" + tb.TrackableName);
-			//				if (tb.name == "New Game Object") {
-			//				 
-			//					// change generic name to include trackable name
 			tb.gameObject.name = "AR-" + tb.TrackableName;
 
 			XElement info = Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName);
 			if (info == null)
 				continue;
 			string objType = Xml.Attribute (info, "type");
-			//				 
-			//					// add additional script components for trackable
 			tb.gameObject.AddComponent<DefaultTrackableEventHandler> ();
 			tb.gameObject.AddComponent<CustomTrackableEventHandler> ();
 			tb.gameObject.AddComponent<TurnOffBehaviour> ();
@@ -238,7 +231,9 @@ public class ScanSceneController : MonoBehaviour
 					if (!string.IsNullOrEmpty (videoPath))
 						pmi.videoPath = GetAssetsPath (videoPath);
 					else {
-						pmi.threeDObject = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
+						Logger.Log (tb.TrackableName + " " + Xml.Attribute (n, "prefab"));
+						GameObject prefab = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
+						pmi.threeDObject = GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation) as GameObject;
 						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
 					}
 					WWW www = new WWW (GetAssetsPath (itemSrc, true));
@@ -259,6 +254,11 @@ public class ScanSceneController : MonoBehaviour
 				ApplyItemInfo (obj, Xml.GetChildByAttribute (itemInfos, "id", tb.TrackableName));
 			}
 			//obj.gameObject.SetActive (true);
+		}
+
+
+		if (!objectTracker.Start ()) {
+			Debug.Log ("<color=yellow>Tracker Failed to Start.</color>");
 		}
 	}
 

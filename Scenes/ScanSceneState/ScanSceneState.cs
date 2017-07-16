@@ -40,6 +40,8 @@ public class ScanSceneState
 	}
 
 	public virtual void OnBackClick(){
+		ScanSceneController.instant.exited = true;
+		OnExit ();
 		SceneManager.LoadScene ("Selection");
 	}
 
