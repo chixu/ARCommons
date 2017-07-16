@@ -27,7 +27,7 @@ public class Configuration : MonoBehaviour {
 		yield return Request.ReadPersistent ("ui/config.xml", str=>configStr = str);
 		if (!String.IsNullOrEmpty (configStr)) {
 			yield return I18n.Initialise (language);
-			GetComponent<StartSceneController> ().loaded = true;
+			GetComponent<StartSceneController> ().OnLoaded();
 		} else {
 			if (I18n.language == Language.Chinese) {
 				message.text = "初始化失败，请检查网络连接";

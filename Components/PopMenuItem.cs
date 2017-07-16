@@ -99,9 +99,11 @@ public class PopMenuItem : MonoBehaviour {
 
 			ScanSceneController.instant.SetState ("menuvideo", new Hashtable{{"item",this}});
 		} else {
+
+			ScanSceneController.instant.SetState ("menuobject", new Hashtable{{"item",this}});
 			//SceneController.instant.ShowBackButtonOnly ();
-			threeDObject.SetActive (true);
-			menu.HideAllItems ();
+			//threeDObject.SetActive (true);
+			//menu.HideAllItems ();
 		}
 	}
 

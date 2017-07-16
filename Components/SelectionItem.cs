@@ -11,14 +11,7 @@ public class SelectionItem : MonoBehaviour {
 	public Image image;
 	private Action<SelectionItem> onClickHandler;
 	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 
 	public void SetOnClick(Action<SelectionItem> handler){
 		onClickHandler = handler;

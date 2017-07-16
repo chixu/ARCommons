@@ -21,7 +21,6 @@ public class SelectionSceneController : MonoBehaviour
 //		Debug.Log ("Start");
 		selectionItems = new List<GameObject> ();
 		progressPanel.onCancelHandler = () => {
-			Debug.LogError("dddfsdfdfsdfss");
 			Config.forceBreak = true;
 			progressPanel.Hide();
 		};
@@ -49,7 +48,7 @@ public class SelectionSceneController : MonoBehaviour
 				selectionItems.Add (obj);
 
 				SelectionItem itemComp = obj.GetComponent<SelectionItem> ();
-				itemComp.name = "item" + (index + 1).ToString ();
+				itemComp.name = desc;
 				itemComp.text.text = I18n.Translate (desc);
 				itemComp.SetOnClick (OnItemClick);
 //				WWW www = new WWW(Path.Combine(Application.persistentDataPath, "ui/"+icon));
@@ -85,6 +84,7 @@ public class SelectionSceneController : MonoBehaviour
 		if (!Config.forceBreak) {
 			Hashtable arg = new Hashtable ();
 			arg.Add ("name", name);
+			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "desc", name));
 			SceneManagerExtension.LoadScene ("Scan", arg);
 		}
 	}

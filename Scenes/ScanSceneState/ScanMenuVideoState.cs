@@ -30,7 +30,7 @@ public class ScanMenuVideoState:ScanVideoState{
 		item.meshRenderer.material = ScanSceneController.instant.videoMaterial;
 		VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
 		scene.description.gameObject.SetActive (false);
-		scene.mediaPlayer.Rewind(false);
+		//scene.mediaPlayer.Rewind(false);
 		scene.mediaPlayer.Play ();
 	}
 

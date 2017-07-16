@@ -12,8 +12,16 @@ using System.Xml.Linq;
 
 public class ScanMenuObjectState:ScanObjectState
 {
+	private PopMenuItem item;
+	public override void OnEnter (Hashtable args = null)
+	{
+		item = args ["item"] as PopMenuItem;
+		item.threeDObject.SetActive (true);
+	}
+
 	public override void OnBackClick(){
 
-		ScanSceneController.currentTrackableObject.GetComponent<PopMenu> ().ShowMenu ();
-	}	
+		ScanSceneController.instant.SetState("menu4", new Hashtable(){{"showImmediate", true}});
+
+	}
 }

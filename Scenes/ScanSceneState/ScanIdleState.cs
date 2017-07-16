@@ -18,7 +18,7 @@ public class ScanIdleState: ScanSceneState
 		ScanSceneController.currentTrackableObject = null;
 		scene.title.text = I18n.Translate (scene.prevSceneName+"_scan_title");
 		scene.description.text = I18n.Translate (scene.prevSceneName+"_scan_desc");
-		VideoController.instant._videoSeekSlider.gameObject.SetActive(true);
-		scene.description.gameObject.SetActive (false);
+		VideoController.instant._videoSeekSlider.gameObject.SetActive(false);
+		scene.description.gameObject.SetActive (true);
 	}
 }
