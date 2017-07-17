@@ -231,13 +231,8 @@ public class ScanSceneController : MonoBehaviour
 					if (!string.IsNullOrEmpty (videoPath))
 						pmi.videoPath = GetAssetsPath (videoPath);
 					else {
-						Logger.Log (tb.TrackableName + " " + Xml.Attribute (n, "prefab"));
-						Logger.Log (loadedAssets.ContainsKey (Xml.Attribute (n, "prefab")).ToString());
-						Logger.Log (loadedAssets [Xml.Attribute (n, "prefab")] .ToString());
 						GameObject prefab = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
-						Logger.Log ("AA");
 						pmi.threeDObject = GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation) as GameObject;
-						Logger.Log ("BB");
 						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
 					}
 					WWW www = new WWW (GetAssetsPath (itemSrc, true));

@@ -24,6 +24,11 @@ public class ScanMenuObjectState:ScanObjectState
 		item.threeDObject.SetActive (true);
 	}
 
+	public override void OnExit ()
+	{
+		item.threeDObject.SetActive (false);
+	}
+
 	public override void OnBackClick(){
 
 		ScanSceneController.instant.SetState("menu4", new Hashtable(){{"showImmediate", true}});
