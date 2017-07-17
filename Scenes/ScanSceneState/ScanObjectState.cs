@@ -12,5 +12,7 @@ using System.Xml.Linq;
 
 public class ScanObjectState:ScanSceneState
 {
-	
+	public ScanObjectState(){
+		name = "object";
+	}
 }

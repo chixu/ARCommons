@@ -12,6 +12,10 @@ using System.Xml.Linq;
 
 public class ScanIdleState: ScanSceneState
 {
+	public ScanIdleState(){
+		name = "idle";
+	}
+
 	public override void OnEnter (Hashtable args = null)
 	{
 		//base.OnEnter (args);

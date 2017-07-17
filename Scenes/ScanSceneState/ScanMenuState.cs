@@ -12,6 +12,10 @@ using System.Xml.Linq;
 
 public class ScanMenuState:ScanSceneState{
 
+	public ScanMenuState(){
+		name = "menu";
+	}
+
 	public override void OnEnter (Hashtable args = null)
 	{
 		scene.title.text = I18n.Translate (scene.prevSceneName+"_scan_title");

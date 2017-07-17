@@ -125,7 +125,8 @@ namespace Vuforia
 			{
 				component.enabled = false;
 			}
-			ScanSceneController.instant.SetState ("idle");
+			if(!ScanSceneController.instant.exited)
+				ScanSceneController.instant.SetState ("idle");
 		}
 
 

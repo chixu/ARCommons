@@ -13,6 +13,11 @@ using System.Xml.Linq;
 public class ScanMenuObjectState:ScanObjectState
 {
 	private PopMenuItem item;
+
+	public ScanMenuObjectState(){
+		name = "menuobject";
+	}
+
 	public override void OnEnter (Hashtable args = null)
 	{
 		item = args ["item"] as PopMenuItem;

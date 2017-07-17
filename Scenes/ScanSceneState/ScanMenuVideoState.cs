@@ -14,6 +14,10 @@ using DG.Tweening;
 public class ScanMenuVideoState:ScanVideoState{
 	private PopMenuItem item;
 
+	public ScanMenuVideoState(){
+		name = "menuvideo";
+	}
+
 	public override void OnEnter (Hashtable args = null)
 	{
 		item = args ["item"] as PopMenuItem;

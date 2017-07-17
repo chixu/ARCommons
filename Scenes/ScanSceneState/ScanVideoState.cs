@@ -12,6 +12,10 @@ using System.Xml.Linq;
 
 public class ScanVideoState:ScanSceneState{
 
+	public ScanVideoState(){
+		name = "video";
+	}
+		
 	public override void OnEnter (Hashtable args = null)
 	{
 		//base.OnEnter (args);

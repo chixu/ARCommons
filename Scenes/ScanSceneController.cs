@@ -122,6 +122,9 @@ public class ScanSceneController : MonoBehaviour
 
 	public void SetState (string name, Hashtable args = null)
 	{
+		if (state != null && state.name == name) {
+			return;
+		}
 		if (state != null) {
 			state.OnExit ();
 			Logger.Log ("leaving scene: " + state.ToString (), "green");
@@ -191,13 +194,11 @@ public class ScanSceneController : MonoBehaviour
 				//cte.mediaPlayer = mediaPlayer;
 			} else if (objType == "menu4") {
 				//asset = planePrefab;
-				Renderer render = (planePrefab).GetComponent<Renderer> ();
-				render.material = videoMaterial;
+				//Renderer render = (planePrefab).GetComponent<Renderer> ();
+				//render.material = videoMaterial;
 				//CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 				//cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
 				cte.mediaPlayer = mediaPlayer;
-
-
 				tb.gameObject.AddComponent<PopMenu> ();
 				PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
 				popmenu.menuItems = new List<PopMenuItem> ();
@@ -225,15 +226,18 @@ public class ScanSceneController : MonoBehaviour
 						planeItem.transform.localPosition = new Vector3 (-position.x, position.y, -position.z);
 					}
 					pmi.Initiate ();
-
 					string itemSrc = Xml.Attribute (n, "src");
 					string videoPath = Xml.Attribute (n, "videosrc");
 					if (!string.IsNullOrEmpty (videoPath))
 						pmi.videoPath = GetAssetsPath (videoPath);
 					else {
 						Logger.Log (tb.TrackableName + " " + Xml.Attribute (n, "prefab"));
+						Logger.Log (loadedAssets.ContainsKey (Xml.Attribute (n, "prefab")).ToString());
+						Logger.Log (loadedAssets [Xml.Attribute (n, "prefab")] .ToString());
 						GameObject prefab = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
+						Logger.Log ("AA");
 						pmi.threeDObject = GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation) as GameObject;
+						Logger.Log ("BB");
 						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
 					}
 					WWW www = new WWW (GetAssetsPath (itemSrc, true));
