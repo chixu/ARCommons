@@ -24,6 +24,7 @@ public class ScanSceneController : MonoBehaviour
 	public static ScanSceneController instant;
 	public static GameObject currentTrackableObject;
 	public ScanSceneState state;
+	public Subtitle subtitle;
 
 	//	private Config localConfig;
 	//	private Config remoteConfig;
@@ -138,6 +139,7 @@ public class ScanSceneController : MonoBehaviour
 	void Awake ()
 	{
 		instant = this;
+		subtitle = GetComponent<Subtitle> ();
 		prevSceneName = SceneManagerExtension.GetSceneArguments () ["name"].ToString ();
 		data = SceneManagerExtension.GetSceneArguments () ["data"] as XElement;
 	}
@@ -182,6 +184,7 @@ public class ScanSceneController : MonoBehaviour
 			tb.gameObject.AddComponent<TurnOffBehaviour> ();
 			CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 			cte.type = objType;
+			cte.subtitlePath = GetAssetsPath (Xml.Attribute (info, "subtitle"), true);
 			UnityEngine.Object asset = null;
 			if (objType == "object") {
 				asset = loadedAssets.ContainsKey (tb.TrackableName) ? loadedAssets [tb.TrackableName] : new GameObject ();
@@ -228,12 +231,14 @@ public class ScanSceneController : MonoBehaviour
 					pmi.Initiate ();
 					string itemSrc = Xml.Attribute (n, "src");
 					string videoPath = Xml.Attribute (n, "videosrc");
+					pmi.subtitlePath = GetAssetsPath(Xml.Attribute (n, "subtitle"), true);
 					if (!string.IsNullOrEmpty (videoPath))
 						pmi.videoPath = GetAssetsPath (videoPath);
 					else {
 						GameObject prefab = loadedAssets [Xml.Attribute (n, "prefab")] as GameObject;
 						pmi.threeDObject = GameObject.Instantiate (prefab, prefab.transform.position, prefab.transform.rotation) as GameObject;
 						pmi.threeDObject.transform.SetParent (tb.gameObject.transform, false);
+						ApplyItemInfo (pmi.threeDObject, n);
 					}
 					WWW www = new WWW (GetAssetsPath (itemSrc, true));
 					yield return www;

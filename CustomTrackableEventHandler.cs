@@ -18,6 +18,7 @@ namespace Vuforia
 	{
 
 		public string videoPath;
+		public string subtitlePath;
 		#region PRIVATE_MEMBER_VARIABLES
 
 		private TrackableBehaviour mTrackableBehaviour;

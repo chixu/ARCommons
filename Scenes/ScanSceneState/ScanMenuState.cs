@@ -31,6 +31,7 @@ public class ScanMenuState:ScanSceneState{
 	}
 
 	public override void OnExit(){
+		base.OnExit ();
 		PopMenu menu = ScanSceneController.currentTrackableObject.GetComponent<PopMenu> ();
 		menu.Hide ();
 	}

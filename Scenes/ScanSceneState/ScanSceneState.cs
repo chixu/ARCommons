@@ -46,10 +46,15 @@ public class ScanSceneState
 	}
 
 	public virtual void OnEnter(Hashtable args = null){
-
+		if (ScanSceneController.currentTrackableObject == null)
+			return;
+		CustomTrackableEventHandler cteh = ScanSceneController.currentTrackableObject.GetComponent<CustomTrackableEventHandler> ();
+		if (cteh) {
+			ScanSceneController.instant.subtitle.Play (cteh.subtitlePath);
+		}
 	}
 
 	public virtual void OnExit(){
-
+		ScanSceneController.instant.subtitle.Stop ();
 	}
 }

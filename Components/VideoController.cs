@@ -14,6 +14,7 @@ public class VideoController : MonoBehaviour
 	private bool _wasPlayingOnScrub;
 	private float _setVideoSeekSliderValue;
 	public static VideoController instant;
+	private string prevPath;
 
 	//		public void OnMuteChange()
 	//		{
@@ -22,6 +23,19 @@ public class VideoController : MonoBehaviour
 	//				_mediaPlayer.Control.MuteAudio(_MuteToggle.isOn);
 	//			}
 	//		}
+
+	public void OpenAndPlay(string path){
+		if (prevPath != path) {
+			_mediaPlayer.OpenVideoFromFile (MediaPlayer.FileLocation.AbsolutePathOrURL, path, true); 
+			//item.meshRenderer.material = ScanSceneController.instant.videoMaterial;
+		} else {
+			_mediaPlayer.Rewind (false);
+			_mediaPlayer.Play ();
+		}
+		prevPath = path;
+		_videoSeekSlider.gameObject.SetActive(true);
+
+	}
 
 	public void OnPlayButton ()
 	{

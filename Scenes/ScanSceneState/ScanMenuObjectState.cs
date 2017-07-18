@@ -21,11 +21,13 @@ public class ScanMenuObjectState:ScanObjectState
 	public override void OnEnter (Hashtable args = null)
 	{
 		item = args ["item"] as PopMenuItem;
+		ScanSceneController.instant.subtitle.Play (item.subtitlePath);
 		item.threeDObject.SetActive (true);
 	}
 
 	public override void OnExit ()
 	{
+		base.OnExit ();
 		item.threeDObject.SetActive (false);
 	}
 

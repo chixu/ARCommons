@@ -20,6 +20,7 @@ public class PopMenuItem : MonoBehaviour {
 	public Material material;
 	public GameObject threeDObject = null;
 	public string videoPath;
+	public string subtitlePath;
 
 	public void Initiate(){
 		origY = this.transform.localPosition.y;
