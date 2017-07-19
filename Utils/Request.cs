@@ -41,12 +41,20 @@ public class Request
 
 	public static IEnumerator ReadStreaming (string str, Action<string> handler)
 	{
-		yield return Read ("file:///" + Application.streamingAssetsPath + "/" + str, handler);
+		yield return Read (ResolvePath(Application.streamingAssetsPath + "/" + str), handler);
 	}
 
 	public static IEnumerator ReadPersistent (string str, Action<string> handler)
 	{
-		yield return Read ("file:///" + Application.persistentDataPath + "/" + str, handler);
+		yield return Read (ResolvePath(Application.persistentDataPath + "/" + str), handler);
+	}
+
+	public static string ResolvePath(string path, bool addFilePrefix = true){
+		if (!addFilePrefix)
+			return path;
+		string str = "file:///" + path;
+		str = str.Replace ("file:////", "file:///");
+		return str;
 	}
 
 	public static IEnumerator Read (string str, Action<string> handler)

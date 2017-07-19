@@ -63,7 +63,7 @@ public class ScanSceneController : MonoBehaviour
 
 	string GetAssetsPath (string str, bool isFile = false)
 	{
-		return (isFile ? "file:///" : "") + Application.persistentDataPath + "/" + prevSceneName + "/" + str;
+		return Request.ResolvePath (Application.persistentDataPath + "/" + prevSceneName + "/" + str, isFile);
 	}
 
 	IEnumerator StartGame ()
@@ -79,6 +79,7 @@ public class ScanSceneController : MonoBehaviour
 			AssetBundle bundle = null;
 			string abName = Xml.Attribute (node, "src");
 			string keyName = prevSceneName + "_" + abName;
+			Logger.Log (abName + " " + keyName, "blue");
 			if (!AssetBundleManager.bundles.ContainsKey (keyName)) {
 				Logger.Log (GetAssetsPath (abName, true), "purple");
 				WWW www = new WWW (GetAssetsPath (abName, true));
@@ -86,10 +87,13 @@ public class ScanSceneController : MonoBehaviour
 				if (www.error == null) {
 					bundle = www.assetBundle;
 					AssetBundleManager.bundles.Add (keyName, bundle);
+				} else {
+					Logger.Log (www.error, "blue");
 				}
 			} else {
 				bundle = AssetBundleManager.bundles [keyName];
 			}
+			Logger.Log (bundle ? bundle.ToString () : "bundle is null", "blue");
 			if (bundle != null) {
 				string[] assetNames;
 				try {
@@ -113,12 +117,13 @@ public class ScanSceneController : MonoBehaviour
 		StartCoroutine (LoadDataSet ());
 	}
 
-	public void PrintLoadedAssets(){
+	public void PrintLoadedAssets ()
+	{
 		string str = "PrintLoadedAssets";
-		foreach(string s in loadedAssets.Keys){
+		foreach (string s in loadedAssets.Keys) {
 			str += " " + s;
 		}
-		Logger.Log(str, "blue");
+		Logger.Log (str, "blue");
 	}
 
 	public void SetState (string name, Hashtable args = null)
@@ -231,7 +236,7 @@ public class ScanSceneController : MonoBehaviour
 					pmi.Initiate ();
 					string itemSrc = Xml.Attribute (n, "src");
 					string videoPath = Xml.Attribute (n, "videosrc");
-					pmi.subtitlePath = GetAssetsPath(Xml.Attribute (n, "subtitle"), true);
+					pmi.subtitlePath = GetAssetsPath (Xml.Attribute (n, "subtitle"), true);
 					if (!string.IsNullOrEmpty (videoPath))
 						pmi.videoPath = GetAssetsPath (videoPath);
 					else {

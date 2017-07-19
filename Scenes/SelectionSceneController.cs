@@ -102,7 +102,7 @@ public class SelectionSceneController : MonoBehaviour
 
 	IEnumerator LoadIcon(string url, Image image){
 		//Debug.Log (Path.Combine ("file:////"+ Application.persistentDataPath, url));
-		WWW www = new WWW("file:///"+ Application.persistentDataPath + "/" + url);
+		WWW www = new WWW(Request.ResolvePath(Application.persistentDataPath + "/" + url));
 		yield return www;
 		image.sprite = Sprite.Create(www.texture, new Rect(0,0,www.texture.width, www.texture.height), new Vector2(0,0));
 	}

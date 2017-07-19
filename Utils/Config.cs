@@ -120,7 +120,7 @@ public class Config
 		}
 		for (int i=0; i<count ; i++) {
 			string name = names [i];
-			yield return Request.DownloadFile (name.Replace ("{%platform%}", platform), name.Replace ("{%platform%}", ""));
+			yield return Request.DownloadFile (name.Replace ("{%platform%}", platform), name.Replace ("{%platform%}/", ""));
 			if (forceBreak) {
 				yield break;
 			} else {
