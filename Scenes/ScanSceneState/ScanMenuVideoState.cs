@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 using System.Xml.Linq;
 using DG.Tweening;
 
-public class ScanMenuVideoState:ScanVideoState{
+public class ScanMenuVideoState:ScanSceneState{
 	private PopMenuItem item;
 	//private bool exited;
 

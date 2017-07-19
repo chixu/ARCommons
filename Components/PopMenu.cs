@@ -7,6 +7,7 @@ using Vuforia;
 public class PopMenu : MonoBehaviour {
 
 	public List<PopMenuItem> menuItems;
+	private bool showing;
 	//private TrackableBehaviour mTrackableBehaviour;
 	//private CustomTrackableEventHandler customTrackable;
 	//public Material playerMateral;
@@ -20,14 +21,19 @@ public class PopMenu : MonoBehaviour {
 		List<int> idxes = Utils.RandomIntArray (4);
 		for (int j = 0; j < menuItems.Count; j++) {
 			int i = idxes [j];
-			menuItems [i].Zoom ();
-			yield return new WaitForSeconds (0.3f);
+			if (showing) {
+				menuItems [i].Zoom ();
+				yield return new WaitForSeconds (0.3f);
+			} else {
+				yield break;
+			}
 		}
 	}
 
 
 	public void Show()
 	{
+		showing = true;
 		StartCoroutine (PopAllItems ());
 		HideAll3DModels ();
 	}
@@ -38,6 +44,7 @@ public class PopMenu : MonoBehaviour {
 //		for (int i = 0; i < menuItems.Count; i++) {
 //			menuItems [i].Reset ();
 //		}
+		showing = false;
 		HideAllItems ();
 		HideAll3DModels ();
 	}

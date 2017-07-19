@@ -87,6 +87,7 @@ namespace Vuforia
 			ScanSceneController.currentTrackableObject = this.gameObject;
 			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
 			Light[] LightComponents = GetComponentsInChildren<Light>(true);
+
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (true);
 			}// Enable light:
@@ -94,6 +95,10 @@ namespace Vuforia
 			{
 				component.enabled = true;
 			}
+//			foreach (AudioSource audio in audios)
+//			{
+//				audio.Play ();
+//			}
 //			if(!string.IsNullOrEmpty(videoPath))
 //				PlayVideo (videoPath);
 
@@ -119,6 +124,7 @@ namespace Vuforia
 			//ScanSceneController.currentTrackableObject = null;
 			Canvas[] canvas = GetComponentsInChildren<Canvas> (true);
 			Light[] LightComponents = GetComponentsInChildren<Light>(true);
+			//AudioSource[] audios = GetComponentsInChildren<AudioSource>(true);
 			foreach (Canvas ca in canvas) {
 				ca.gameObject.SetActive (false);
 			}
@@ -126,6 +132,10 @@ namespace Vuforia
 			{
 				component.enabled = false;
 			}
+//			foreach (AudioSource audio in audios)
+//			{
+//				audio.Stop ();
+//			}
 			if(!ScanSceneController.instant.exited)
 				ScanSceneController.instant.SetState ("idle");
 		}
