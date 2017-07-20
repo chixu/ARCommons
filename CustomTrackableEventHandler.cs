@@ -25,7 +25,7 @@ namespace Vuforia
 		//private bool isForcedTrackingLost = false;
 		//private ImageTargetBehaviour ITB;
 		private TouchRotate touchRotate;
-		public MediaPlayer mediaPlayer;
+		//public MediaPlayer mediaPlayer;
 		//public bool isMenu = false;
 		public string type;
 

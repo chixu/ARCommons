@@ -16,8 +16,8 @@ public class ScanSceneController : MonoBehaviour
 	//public string fileName = "myassets.dlc";
 	//public string configName = "config.json";
 	//public Text text;
-	public MediaPlayer mediaPlayer;
-	public Material videoMaterial;
+	//public MediaPlayer mediaPlayer;
+	//public Material videoMaterial;
 	public Text title;
 	public Text description;
 	public GameObject planePrefab;
@@ -84,7 +84,7 @@ public class ScanSceneController : MonoBehaviour
 				Logger.Log (GetAssetsPath (abName, true), "purple");
 				WWW www = new WWW (GetAssetsPath (abName, true));
 				yield return www;
-				if (www.error == null) {
+				if (string.IsNullOrEmpty(www.error)) {
 					bundle = www.assetBundle;
 					AssetBundleManager.bundles.Add (keyName, bundle);
 				} else {
@@ -195,10 +195,10 @@ public class ScanSceneController : MonoBehaviour
 				asset = loadedAssets.ContainsKey (tb.TrackableName) ? loadedAssets [tb.TrackableName] : new GameObject ();
 			} else if (objType == "video") {
 				asset = planePrefab;
-				Renderer render = (planePrefab).GetComponent<Renderer> ();
-				render.material = videoMaterial;
+				//Renderer render = (planePrefab).GetComponent<Renderer> ();
+				//render.material = videoMaterial;
 
-				cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"));
+				cte.videoPath = GetAssetsPath (Xml.Attribute (info, "videosrc"), true);
 				//cte.mediaPlayer = mediaPlayer;
 			} else if (objType == "menu4") {
 				//asset = planePrefab;
@@ -206,7 +206,7 @@ public class ScanSceneController : MonoBehaviour
 				//render.material = videoMaterial;
 				//CustomTrackableEventHandler cte = tb.gameObject.GetComponent<CustomTrackableEventHandler> ();
 				//cte.videoPath = GetAssetsPath (tb.TrackableName + ".mp4");
-				cte.mediaPlayer = mediaPlayer;
+				//cte.mediaPlayer = mediaPlayer;
 				tb.gameObject.AddComponent<PopMenu> ();
 				PopMenu popmenu = tb.gameObject.GetComponent<PopMenu> ();
 				popmenu.menuItems = new List<PopMenuItem> ();

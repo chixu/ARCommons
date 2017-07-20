@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System;
 
 public class Configuration : MonoBehaviour {
-	public string remoteUrl;
+	public string remoteUrl = "http://www.iyoovr.com/hsyx";
 	public string language = Language.Chinese;
 	public Text message;
 	private string configStr;
