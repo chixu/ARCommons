@@ -30,7 +30,7 @@ public class Config
 			return "Windows";
 	}
 
-	public static IEnumerator LoadConfig(string url, Action<int, int> loadedHandler = null){
+	public static IEnumerator LoadConfig(string url, Action<int, int> loadedHandler = null, OKCancelPanel panel = null){
 		localConfig = null;
 		remoteConfig = null;
 		forceBreak = false;
@@ -74,7 +74,14 @@ public class Config
 			string localVersion = Xml.Version (localConfig);
 			string preVersion = Xml.Attribute (remoteConfig, "preversion");
 			string remoteVersion = Xml.Version (remoteConfig);
+			float filesize = Xml.Float(remoteConfig, "size");
 			if (localVersion != remoteVersion) {
+				//if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && filesize > 3) {
+				if (panel != null && filesize > 3) {
+					yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), filesize.ToString()+"M"));
+					if (panel.isCancel)
+						yield break;
+				}
 				var nodes = remoteConfig.Element ("update").Elements();
 				List<string> updates = new List<string> ();
 				foreach (XElement node in nodes) {

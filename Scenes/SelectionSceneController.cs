@@ -11,6 +11,7 @@ public class SelectionSceneController : MonoBehaviour
 	public GameObject selectionItem;
 	public GameObject itemsPanel;
 	public ProgressPanel progressPanel;
+	public OKCancelPanel okCancelPanel;
 	private XElement layout;
 	private List<GameObject> selectionItems;
 	// Use this for initialization
@@ -78,10 +79,11 @@ public class SelectionSceneController : MonoBehaviour
 
 	IEnumerator OnItemClickHandler(string name){
 		Logger.Log (name + " clicked");
+		okCancelPanel.Reset ();
 		Enabled = false;
-		yield return Config.LoadConfig (name + "/config.xml", FileLoaded);
+		yield return Config.LoadConfig (name + "/config.xml", FileLoaded, okCancelPanel);
 		Enabled = true;
-		if (!Config.forceBreak) {
+		if (!Config.forceBreak && !okCancelPanel.isCancel) {
 			Hashtable arg = new Hashtable ();
 			arg.Add ("name", name);
 			arg.Add ("data", Xml.GetChildByAttribute(layout.Element ("items"), "desc", name));
