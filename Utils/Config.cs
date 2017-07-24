@@ -76,8 +76,8 @@ public class Config
 			string remoteVersion = Xml.Version (remoteConfig);
 			float filesize = Xml.Float(remoteConfig, "size");
 			if (localVersion != remoteVersion) {
-				//if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && filesize > 3) {
-				if (panel != null && filesize > 3) {
+				if (panel != null && Application.internetReachability != NetworkReachability.ReachableViaLocalAreaNetwork && filesize > 3) {
+				//if (panel != null && filesize > 3) {
 					yield return panel.Show (string.Format( I18n.Translate ("not_in_wifi"), filesize.ToString()+"M"));
 					if (panel.isCancel)
 						yield break;
