@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.Networking;
 using Vuforia;
-using RenderHeads.Media.AVProVideo;
 using UnityEngine.SceneManagement;
 using System.Xml.Linq;
 using DG.Tweening;

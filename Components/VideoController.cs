@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using RenderHeads.Media.AVProVideo;
 using UnityEngine.Video;
 //-----------------------------------------------------------------------------
 // Copyright 2015-2016 RenderHeads Ltd.  All rights reserverd.

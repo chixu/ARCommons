@@ -6,7 +6,6 @@ Confidential and Proprietary - Protected under copyright and other laws.
 
 using UnityEngine;
 using UnityEngine.UI;
-using RenderHeads.Media.AVProVideo;
 
 namespace Vuforia
 {
